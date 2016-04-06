@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "nag"
+require "drb"
+require "rinda/ring"
+
+class Server
+  include DRb::DRbUndumped
+  def get_time
+    return Time.now
+  end
+  def log(message)
+    puts message
+  end
+  def check
+    top = `top -b | head -n1 | cut -d, -f3-`.chomp
+    hostname = `hostname`.chomp
+    hostname + top
+  end
+  def host
+  end
+end
+
+FRONT_OBJECT = Server.new
+
+drb_wrapper = DRb.start_service(nil, FRONT_OBJECT)
+
+puts "looking for rinda"
+ring_server = Rinda::RingFinger.primary
+puts "server at #{ring_server.__drburi}"
+
+puts "registering #{__FILE__}"
+name = `hostname`
+
+renewer = Rinda::SimpleRenewer.new(5)
+tuple = [:name, FRONT_OBJECT, drb_wrapper, "Monitoring Service on #{name}"]
+ring_server.write(tuple, renewer)
+puts "running and registered with rinda"
+
+DRb.thread.join
