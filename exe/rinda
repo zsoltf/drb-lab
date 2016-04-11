@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby -w
+# rinda tuplespace
+
+require 'rinda/ring'
+require 'rinda/tuplespace'
+
+DRb.start_service
+
+ts = Rinda::TupleSpace.new
+
+provider = Rinda::RingProvider.new :TupleSpace, ts, 'Tuple Space 2000'
+provider.provide
+
+system("clear")
+puts "Rinda TupleSpace Started"
+
+DRb.thread.join

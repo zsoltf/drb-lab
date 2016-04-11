@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby -w
+# rinda ring server
+
+require 'rinda/ring'
+require 'rinda/tuplespace'
+
+DRb.start_service
+
+Rinda::RingServer.new Rinda::TupleSpace.new
+
+system("clear")
+puts "Ring Server Started"
+
+DRb.thread.join
