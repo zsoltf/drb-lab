@@ -1,6 +1,6 @@
 require 'rinda/ring'
 
-module DRbShared
+module Nag::DRbShared
   module_function
 
   def read_all_data
@@ -21,8 +21,8 @@ module DRbShared
   end
 end
 
-class DRbNode
-  include DRbShared
+class Nag::DRbNode
+  include Nag::DRbShared
   attr_reader :client, :data
 
   def initialize(client, check_timeout=10)

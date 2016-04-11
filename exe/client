@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby -w
+lib = File.expand_path('../../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require 'nag'
+include Nag
+
+nag = Client.new
+DRbNode.new(nag) do |node, client|
+
+  loop do
+    node.data.write [:nag, Time.now, client, client.snapshot]
+    sleep 1
+  end
+
+end
+
+puts 'done'
