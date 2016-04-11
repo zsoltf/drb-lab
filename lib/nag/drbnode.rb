@@ -1,14 +1,16 @@
 require 'rinda/ring'
 
-module Nag::DRbShared
+module DRbShared
   module_function
 
+  SIGNATURE = Array.new(4) { nil }
+
   def read_all_data
-    tuple_space.read_all [nil,nil,nil,nil]
+    tuple_space.read_all SIGNATURE
   end
 
   def services
-    server.read_all [nil,nil,nil,nil]
+    server.read_all SIGNATURE
   end
 
   def tuple_space
@@ -21,19 +23,28 @@ module Nag::DRbShared
   end
 end
 
-class Nag::DRbNode
-  include Nag::DRbShared
-  attr_reader :client, :data
+class DRbNode
+  include DRbShared
+  attr_reader :data, :started
 
-  def initialize(client, check_timeout=10)
-    class << client; include DRbUndumped; end
-    @client = client
+  def initialize(check_timeout=10)
+    class << self; include DRbUndumped; end
     @data = tuple_space
     @renewer = Rinda::SimpleRenewer.new(check_timeout)
     @provider = Rinda::RingProvider.new(
-      client.to_s, client, "#{client} DRb Node", @renewer
+      to_sym, self, "#{self} DRb Node", @renewer
     ).provide
-    yield(self, client) if block_given?
+    @started = Time.now
+    yield(self) if block_given?
     return self
   end
+
+  def to_sym
+    to_s.gsub(/[-.:]/, '_').to_sym
+  end
+
+  def signature(snapshot)
+    data.write [:name, to_sym, self, [Time.now, snapshot]]
+  end
+
 end

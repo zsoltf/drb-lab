@@ -1,14 +1,14 @@
 require "nag/version"
 require "nag/drbnode"
 
-class Nag::Client
-  def initialize
-    @hostname = `hostname`.strip
-    @pid = Process.pid
-  end
+class Nag::Client < DRbNode
 
   def to_s
-    "#@hostname-#@pid"
+    "#{`hostname`.strip}:#{Process.pid}"
+  end
+
+  def sign
+    signature(snapshot)
   end
 
   def ps
@@ -17,5 +17,9 @@ class Nag::Client
 
   def snapshot
     `top | head -n 4`.split("\n").map(&:strip)
+  end
+
+  def monitor
+    Thread.new { loop { sign; sleep 1}}.join
   end
 end
