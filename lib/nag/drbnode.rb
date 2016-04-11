@@ -39,6 +39,10 @@ class DRbNode
     return self
   end
 
+  def to_s
+    "#{self.class}_#{self.object_id}"
+  end
+
   def to_sym
     to_s.gsub(/[-.:]/, '_').to_sym
   end

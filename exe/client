@@ -4,4 +4,27 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'nag'
 
+class Nag::Client < DRbNode
+
+  def to_s
+    "#{`hostname`.strip}:#{Process.pid}"
+  end
+
+  def sign
+    signature(snapshot)
+  end
+
+  def ps
+    `ps aux`
+  end
+
+  def snapshot
+    `top | head -n 4`.split("\n").map(&:strip)
+  end
+
+  def monitor
+    Thread.new { loop { sign; sleep 1}}.join
+  end
+end
+
 Nag::Client.new.monitor
