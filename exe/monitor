@@ -6,14 +6,23 @@ require 'nag'
 require 'awesome_print'
 
 class Nag::Monitor < DRbNode
+  attr_reader :clients
   def start
     loop do
-      system("clear")
-      s = services.map {|e| Hash[e[1], e[3]] }
-      msg = read_all_data.group_by {|e| e[1] }
+      msg = read_all_data
+        .group_by {|e| e[1] }
         .map {|k,v| Hash[k, v.last.last]}
-      require 'pry';binding.pry
+        .inject(:update)
+      monitor = {}
+      services
+        .map {|e| Hash[e[1], e[3]] }
+        .inject(:update)
+        .each {|k,v| monitor[k] = msg[k] if msg[k]}
+      clients = monitor.keys
+      ap clients
+      ap monitor
       sleep 1
+      system("clear")
     end
   end
 end
