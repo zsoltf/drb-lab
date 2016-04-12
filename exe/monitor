@@ -9,7 +9,10 @@ class Nag::Monitor < DRbNode
   def start
     loop do
       system("clear")
-      ap read_all_data.group_by {|e| e[1] }.map {|k,v| Hash[k, v.last.last]}
+      s = services.map {|e| Hash[e[1], e[3]] }
+      msg = read_all_data.group_by {|e| e[1] }
+        .map {|k,v| Hash[k, v.last.last]}
+      require 'pry';binding.pry
       sleep 1
     end
   end

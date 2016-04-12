@@ -7,7 +7,11 @@ require 'nag'
 class Nag::Client < DRbNode
 
   def to_s
-    "#{`hostname`.strip}:#{Process.pid}"
+    `hostname`.strip
+  end
+
+  def pid
+    Process.pid
   end
 
   def sign
