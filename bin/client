@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby -w
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'nag'
+require "bundler/setup"
+require 'lab'
 
-class Nag::Client < DRbNode
+class Lab::Client < DRbNode
 
   def to_s
     `hostname`.strip
@@ -31,4 +30,4 @@ class Nag::Client < DRbNode
   end
 end
 
-Nag::Client.new.monitor
+Lab::Client.new.monitor

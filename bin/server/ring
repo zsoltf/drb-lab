@@ -9,6 +9,6 @@ DRb.start_service
 Rinda::RingServer.new Rinda::TupleSpace.new
 
 system("clear")
-puts "Ring Server Started"
+puts "Rinda Ring Server Started"
 
 DRb.thread.join

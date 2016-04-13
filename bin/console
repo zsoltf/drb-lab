@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "nag"
+require "lab"
 
 require "pry"
 Pry.start

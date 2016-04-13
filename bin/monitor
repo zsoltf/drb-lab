@@ -1,11 +1,10 @@
 #!/usr/bin/env ruby -w
-lib = File.expand_path('../../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require 'nag'
+require "bundler/setup"
+require 'lab'
 require 'awesome_print'
 
-class Nag::Monitor < DRbNode
+class Lab::Monitor < DRbNode
   attr_reader :clients
   def start
     loop do
@@ -27,4 +26,4 @@ class Nag::Monitor < DRbNode
   end
 end
 
-Nag::Monitor.new.start
+Lab::Monitor.new.start
